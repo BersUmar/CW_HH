@@ -1,3 +1,4 @@
+import json
 import os
 from abc import ABC, abstractmethod
 
@@ -22,13 +23,14 @@ class HH(Engine):
         self.params = {
             "text": keyword,
             "page": page,
-            "per_page": 100,
+            "per_page": 20,
             "search_field": "name",
         }
 
     def get_request(self):
-        return requests.get(self.url, params=self.params)
-
+        data = requests.get(self.url, params=self.params)
+        task_hh = data.json()
+        return task_hh.get('items', [])
 
 class Superjob(Engine):
     def __init__(self, keyword, page=0):
@@ -38,9 +40,14 @@ class Superjob(Engine):
             "keywords[0][srwc]": 4,
             "keywords[0][skwc]": "or",
             "page": page,
-            "count": 100
+            "count": 20
         }
+
+    # def __str__(self):
+    #     return f''
 
     def get_request(self):
         headers = {"X-Api-App-Id": os.environ["SUPERJOB_API_KEY"]}
-        return requests.get(self.url, headers=headers, params=self.params)
+        data = requests.get(self.url, headers=headers, params=self.params)
+        task_sj = data.json()
+        return task_sj.get('objects', [])
