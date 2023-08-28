@@ -11,19 +11,19 @@ def top(vacancy, count):
 def get_hh_vacancy(connector: Connector):
     vacancies = [
         HHVac(
-            title=vacancy['name'],
-            link=vacancy['alternate_url'],
-            description=vacancy['snippet'],
-            salary=vacancy['salary']['from'] if vacancy['salary'] else None)
+            title=vacancy["name"],
+            link=vacancy["alternate_url"],
+            description=vacancy["snippet"],
+            salary=vacancy["salary"]["from"] if vacancy["salary"] else None)
         for vacancy in connector.select({})]
     return vacancies
 
 def get_sj_vacancy(connect):
     vacancies = [
         SJVac(
-            title=vacancy['profession'],
-            link=vacancy['link'],
-            description=vacancy['candidat'],
-            salary=vacancy['payment_from'])
+            title=vacancy["profession"],
+            link=vacancy["link"],
+            description=vacancy["candidat"],
+            salary=vacancy["payment_from"])
         for vacancy in connect.select({})]
     return vacancies
