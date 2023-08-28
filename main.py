@@ -6,7 +6,6 @@ from src.utils import sort, get_hh_vacancy, get_sj_vacancy, top
 
 
 def main():
-
     # keyword = input("Введите ключевое слово для поиска вакансий: ")
     keyword = 'python'
     hh_engine = HH(keyword)
@@ -19,20 +18,20 @@ def main():
     more = True
     while True:
         if page < hh_pages:
-            hh_engine.params['page'] = page
+            hh_engine.params["page"] = page
             page += 1
             hh_vacancies = json.dumps(hh_engine.get_request())
-            hh_pages = hh_vacancies['pages']
-            hh_items = hh_vacancies['items']
+            hh_pages = hh_vacancies["pages"]
+            hh_items = hh_vacancies["items"]
             hh_connector.insert(hh_items)
         else:
             hh_close = True
 
         if more:
-            sj_engine.params['page'] = sj_engine.params['page'] + 1
+            sj_engine.params["page"] = sj_engine.params["page"] + 1
             sj_vacancies = json.dumps(sj_engine.get_request())
-            sj_items = sj_vacancies['objects']
-            more = sj_vacancies['more']
+            sj_items = sj_vacancies["objects"]
+            more = sj_vacancies["more"]
             sj_connector.insert(sj_items)
 
         if hh_close and not more:
@@ -59,6 +58,7 @@ def main():
         continue_run = input("хотите продолжить работу с программой? (y/n)")
         if continue_run == 'n':
             break
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

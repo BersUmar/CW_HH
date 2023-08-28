@@ -28,9 +28,8 @@ class HH(Engine):
         }
 
     def get_request(self):
-        data = requests.get(self.url, params=self.params)
-        task_hh = data.json()
-        return task_hh.get('items', [])
+        return requests.get(self.url, params=self.params)
+
 
 class Superjob(Engine):
     def __init__(self, keyword, page=0):
@@ -48,6 +47,4 @@ class Superjob(Engine):
 
     def get_request(self):
         headers = {"X-Api-App-Id": os.environ["SUPERJOB_API_KEY"]}
-        data = requests.get(self.url, headers=headers, params=self.params)
-        task_sj = data.json()
-        return task_sj.get('objects', [])
+        return requests.get(self.url, headers=headers, params=self.params)
