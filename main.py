@@ -12,30 +12,12 @@ def main():
     sj_engine = Superjob(keyword)
     hh_connector = Connector("vacancy_hh.json")
     sj_connector = Connector("vacancy_sj.json")
-    page = 0
-    hh_pages = 1
-    hh_close = False
-    more = True
-    while True:
-        if page < hh_pages:
-            hh_engine.params["page"] = page
-            page += 1
-            hh_vacancies = hh_engine.get_request().json()
-            hh_pages = hh_vacancies["pages"]
-            hh_items = hh_vacancies["items"]
-            hh_connector.insert(hh_items)
-        else:
-            hh_close = True
-
-        if more:
-            sj_engine.params["page"] = sj_engine.params["page"] + 1
-            sj_vacancies = sj_engine.get_request().json()
-            sj_items = sj_vacancies["objects"]
-            more = sj_vacancies["more"]
-            sj_connector.insert(sj_items)
-
-        if hh_close and not more:
-            break
+    hh_vacancies = hh_engine.get_request().json()["items"]
+    sj_vacancies = sj_engine.get_request().json()["objects"]
+    for vacancy in hh_vacancies:
+        hh_connector.insert(vacancy)
+    for vacancy in sj_vacancies:
+        sj_connector.insert(vacancy)
 
     while True:
         command = input('sort/top: ')
@@ -48,17 +30,12 @@ def main():
         elif command == 'top':
             hh_vacancies = get_hh_vacancy(hh_connector)
             sj_vacancies = get_sj_vacancy(sj_connector)
-            all_vacancies = hh_vacancies + sj_vacancies
             top_count = int(input('введите количество необходимых вакансий: '))
-            top_vacancies = top(all_vacancies, top_count)
-            for vacancy in top_vacancies:
+            sorted_vacancies = top(hh_vacancies + sj_vacancies, top_count)
+            for vacancy in sorted_vacancies:
                 print(vacancy)
-        else:
-            print("Некорректная команда, повторите попытку: ")
-        continue_run = input("хотите продолжить работу с программой? (y/n)")
-        if continue_run == 'n':
+        elif command == "exit":
             break
-
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
